@@ -207,7 +207,9 @@ export type Database = {
           promised_next_steps: string | null
           raw_notes: string | null
           sent_thank_you: boolean | null
+          source: string
           structured_summary: Json | null
+          transcript: string | null
           user_id: string
         }
         Insert: {
@@ -221,7 +223,9 @@ export type Database = {
           promised_next_steps?: string | null
           raw_notes?: string | null
           sent_thank_you?: boolean | null
+          source?: string
           structured_summary?: Json | null
+          transcript?: string | null
           user_id: string
         }
         Update: {
@@ -235,7 +239,9 @@ export type Database = {
           promised_next_steps?: string | null
           raw_notes?: string | null
           sent_thank_you?: boolean | null
+          source?: string
           structured_summary?: Json | null
+          transcript?: string | null
           user_id?: string
         }
         Relationships: [

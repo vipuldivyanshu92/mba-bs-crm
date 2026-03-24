@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { ArrowLeft, Edit, Trash2, Mail, Linkedin, Calendar, MessageSquare, Coffee } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Mail, Linkedin, Calendar, MessageSquare, Coffee, ChevronDown, ChevronUp } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import type { Tables } from '@/integrations/supabase/types';
@@ -150,24 +150,7 @@ export default function ContactDetail() {
           ) : (
             <div className="space-y-3">
               {meetings.map(m => (
-                <Card key={m.id} className="border-border/50">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Coffee className="w-4 h-4 text-accent" />
-                      <span className="text-sm font-medium">{MEETING_TYPE_LABELS[m.meeting_type] || m.meeting_type}</span>
-                      <span className="text-xs text-muted-foreground ml-auto">{format(new Date(m.date), 'MMM d, yyyy')}</span>
-                    </div>
-                    {m.key_takeaways && <p className="text-sm text-foreground mt-1">{m.key_takeaways}</p>}
-                    {m.promised_next_steps && <p className="text-xs text-muted-foreground mt-1">Next steps: {m.promised_next_steps}</p>}
-                    {m.structured_summary && (
-                      <div className="mt-3 p-3 rounded-lg bg-muted/50 text-xs space-y-1">
-                        {Object.entries(m.structured_summary as Record<string, string>).map(([k, v]) => (
-                          <div key={k}><span className="font-medium capitalize">{k.replace(/_/g, ' ')}:</span> {v}</div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                <MeetingCard key={m.id} meeting={m} />
               ))}
               {followUps.map(f => (
                 <Card key={f.id} className="border-border/50">
@@ -200,6 +183,50 @@ export default function ContactDetail() {
 
       {contact && <EditContactDialog open={editOpen} onOpenChange={setEditOpen} contact={contact} onSaved={() => { setEditOpen(false); window.location.reload(); }} />}
     </div>
+  );
+}
+
+function MeetingCard({ meeting: m }: { meeting: Meeting }) {
+  const [showTranscript, setShowTranscript] = useState(false);
+
+  return (
+    <Card className="border-border/50">
+      <CardContent className="p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Coffee className="w-4 h-4 text-accent" />
+          <span className="text-sm font-medium">{MEETING_TYPE_LABELS[m.meeting_type] || m.meeting_type}</span>
+          {m.source === 'granola' && (
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 text-muted-foreground">Granola</Badge>
+          )}
+          <span className="text-xs text-muted-foreground ml-auto">{format(new Date(m.date), 'MMM d, yyyy')}</span>
+        </div>
+        {m.key_takeaways && <p className="text-sm text-foreground mt-1">{m.key_takeaways}</p>}
+        {m.promised_next_steps && <p className="text-xs text-muted-foreground mt-1">Next steps: {m.promised_next_steps}</p>}
+        {m.structured_summary && (
+          <div className="mt-3 p-3 rounded-lg bg-muted/50 text-xs space-y-1">
+            {Object.entries(m.structured_summary as Record<string, string>).map(([k, v]) => (
+              <div key={k}><span className="font-medium capitalize">{k.replace(/_/g, ' ')}:</span> {v}</div>
+            ))}
+          </div>
+        )}
+        {m.transcript && (
+          <>
+            <button
+              onClick={() => setShowTranscript(!showTranscript)}
+              className="flex items-center gap-1 mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {showTranscript ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              {showTranscript ? 'Hide transcript' : 'View transcript'}
+            </button>
+            {showTranscript && (
+              <div className="mt-2 p-3 rounded-lg bg-muted/50 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto">
+                {m.transcript}
+              </div>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
