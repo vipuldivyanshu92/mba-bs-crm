@@ -14,6 +14,7 @@ import Companies from "./pages/Companies";
 import Reminders from "./pages/Reminders";
 import Messages from "./pages/Messages";
 import Settings from "./pages/Settings";
+import GranolaSync from "./pages/GranolaSync";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/companies" element={<ProtectedRoute><Companies /></ProtectedRoute>} />
             <Route path="/reminders" element={<ProtectedRoute><Reminders /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+            <Route path="/granola" element={<ProtectedRoute><GranolaSync /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

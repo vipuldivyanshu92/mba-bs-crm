@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import {
-  LayoutDashboard, Users, Building2, Bell, MessageSquare, Settings, LogOut, Plus, Menu, X, Flame
+  LayoutDashboard, Users, Building2, Bell, MessageSquare, Settings, LogOut, Plus, Menu, X, Flame, FileAudio
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,7 @@ const navItems = [
   { to: '/companies', icon: Building2, label: 'Pipeline' },
   { to: '/reminders', icon: Bell, label: 'Reminders' },
   { to: '/messages', icon: MessageSquare, label: 'Messages' },
+  { to: '/granola', icon: FileAudio, label: 'Granola Sync' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
