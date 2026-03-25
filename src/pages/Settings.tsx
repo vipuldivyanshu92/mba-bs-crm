@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
+import { Copy, Check } from 'lucide-react';
+
 const INDUSTRIES = ['Consulting', 'Finance', 'Tech', 'Healthcare', 'Consumer Goods', 'Energy', 'Real Estate', 'Private Equity', 'Venture Capital'];
 
 export default function Settings() {
@@ -19,6 +21,16 @@ export default function Settings() {
   const [industries, setIndustries] = useState<string[]>([]);
   const [companies, setCompanies] = useState('');
   const [saving, setSaving] = useState(false);
+  const [copiedWebhook, setCopiedWebhook] = useState(false);
+
+  const webhookUrl = user ? `${import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/otter-webhook?user_id=${user.id}` : '';
+
+  const handleCopyWebhook = () => {
+    navigator.clipboard.writeText(webhookUrl);
+    setCopiedWebhook(true);
+    setTimeout(() => setCopiedWebhook(false), 2000);
+    toast.success('Webhook URL copied');
+  };
 
   useEffect(() => {
     if (profile) {
@@ -110,6 +122,27 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">Signed in as {user?.email}</p>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/50">
+        <CardHeader>
+          <CardTitle className="text-base">Integrations</CardTitle>
+          <CardDescription>Automate workflows (e.g., Otter.ai Sync)</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Use this webhook URL in <b>Zapier</b> or <b>Make.com</b> to automatically sync your transcriptions to your CRM.
+            Set up a trigger for "New Note" and a POST action to this URL with the payload:<br/>
+            <code className="bg-muted p-1 text-xs rounded mt-2 inline-block">{"{"} "transcript": "..." {"}"}</code>
+          </p>
+          <div className="flex gap-2 items-center">
+            <Input readOnly value={webhookUrl} className="font-mono text-xs" />
+            <Button variant="outline" size="sm" onClick={handleCopyWebhook} className="gap-1.5 whitespace-nowrap">
+              {copiedWebhook ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedWebhook ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
